@@ -45,12 +45,12 @@ def mostrar_menu():
 
 # cria a funcao principal que vai fazer o cliente funcionar
 def iniciar_cliente():
-    # cria o socket tcp usando ipv4 (af_inet) e stream (sock_stream) [cite: 327]
+    # cria o socket tcp usando ipv4 (af_inet) e stream (sock_stream)
     cliente = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     # tenta executar o codigo abaixo, se der erro de conexao ele pula pro except
     try:
-        # tenta se conectar ao servidor usando o ip e a porta definidos [cite: 344]
+        # tenta se conectar ao servidor usando o ip e a porta definidos
         cliente.connect((HOST, PORTA))
         
         # mostra na tela que conseguiu conectar com sucesso
@@ -126,10 +126,10 @@ def iniciar_cliente():
                 # ignora o resto do codigo abaixo e volta pro inicio do loop (pro menu)
                 continue
 
-            # converte o texto do comando para bytes (utf-8) e envia pro servidor [cite: 347]
+            # converte o texto do comando para bytes (utf-8) e envia pro servidor
             cliente.sendall(comando.encode("utf-8"))
 
-            # recebe a resposta do servidor (em bytes) e converte de volta para texto [cite: 348]
+            # recebe a resposta do servidor (em bytes) e converte de volta para texto
             resposta = cliente.recv(TAMANHO_BUFFER).decode("utf-8")
             
             # pula uma linha e avisa que a mensagem abaixo veio do servidor
@@ -155,7 +155,7 @@ def iniciar_cliente():
         
     # o bloco finally sempre executa no final, dando erro ou nao
     finally:
-        # fecha a conexao com o servidor [cite: 350]
+        # fecha a conexao com o servidor
         cliente.close()
         
         # avisa na tela que o programa terminou
