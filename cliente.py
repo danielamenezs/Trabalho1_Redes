@@ -9,9 +9,23 @@ TAMANHO_BUFFER = 4096
 # flag para controlar o loop principal e as threads
 cliente_rodando = True
 
+# evento usado apenas para organizar a ordem da saida no terminal
+resposta_recebida = threading.Event()
+
+# lista local usada apenas para mostrar as opcoes antes da inscricao
+MATERIAS = [
+    "Circuitos Eletricos I",
+    "Redes de Computadores I",
+    "Calculo III",
+    "Sistemas Operacionais"
+]
+
 def mostrar_menu():
     # desenha as opcoes na tela
-    print("\n--- MURAL ACADEMICO ---")
+    print()
+    print("MURAL ACADEMICO")
+    print("Selecione uma opcao:")
+    print()
     print("1. Lista de materias disponiveis")
     print("2. Ver avisos de uma materia")
     print("3. Publicar novo aviso")
@@ -19,8 +33,17 @@ def mostrar_menu():
     print("5. Limpar mural de uma materia")
     print("6. Inscrever-se em uma materia")
     print("7. Remover inscricao de uma materia")
+    print("8. Ver materias em que estou inscrito")
     print("0. Sair do programa")
-    print("-----------------------")
+    print()
+
+def mostrar_materias_para_escolha():
+    # mostra a lista de materias antes de pedir o numero ao usuario
+    print()
+    print("Materias disponiveis:")
+    for indice, materia in enumerate(MATERIAS, start=1):
+        print(f"{indice}. {materia}")
+    print()
 
 def receber_mensagens(cliente):
     global cliente_rodando
@@ -37,11 +60,15 @@ def receber_mensagens(cliente):
             if not dados:
                 print("\nConexao encerrada pelo servidor.")
                 cliente_rodando = False
+                resposta_recebida.set()
                 break
 
             # converte os bytes pra texto
             texto_recebido = dados.decode("utf-8")
             buffer_texto += texto_recebido
+
+            # controla se alguma resposta normal foi recebida nesse bloco
+            recebeu_resposta_normal = False
 
             # processa as mensagens cortando a cada quebra de linha
             while "\n" in buffer_texto:
@@ -62,22 +89,29 @@ def receber_mensagens(cliente):
                         horario = partes[4]
                         
                         # imprime os dados da notificacao
-                        print("\n--- NOVA NOTIFICACAO ---")
-                        print(f"Materia: {materia}")
-                        print(f"Autor: {autor}")
-                        print(f"Horario: {horario}")
-                        print(f"Aviso: {aviso}")
-                        print("------------------------\n")
+                        print()
+                        print("Nova notificacao recebida")
+                        print(f"Materia : {materia}")
+                        print(f"Autor   : {autor}")
+                        print(f"Horario : {horario}")
+                        print(f"Aviso   : {aviso}")
+                        print()
                     else:
                         print(f"\nNotificacao recebida: {mensagem}\n")
 
                 # se for resposta de um comando normal, so imprime
                 else:
                     print(f"\n{mensagem}")
+                    recebeu_resposta_normal = True
+
+            # libera o menu principal somente depois de imprimir a resposta recebida
+            if recebeu_resposta_normal:
+                resposta_recebida.set()
 
         except OSError:
             # trata erro caso o programa seja fechado
             cliente_rodando = False
+            resposta_recebida.set()
             break
 
 def enviar_comando(cliente, comando):
@@ -132,6 +166,7 @@ def iniciar_cliente():
                 comando = f"CLEAR|{numero}"
 
             elif opcao == "6":
+                mostrar_materias_para_escolha()
                 numero = input("Digite o numero da materia para se inscrever: ")
                 comando = f"SUB|{numero}"
 
@@ -139,9 +174,14 @@ def iniciar_cliente():
                 numero = input("Digite o numero da materia para remover inscricao: ")
                 comando = f"UNSUB|{numero}"
 
+            elif opcao == "8":
+                comando = "INSCRICOES"
+
             elif opcao == "0":
                 comando = "QUIT"
+                resposta_recebida.clear()
                 enviar_comando(cliente, comando)
+                resposta_recebida.wait(timeout=3)
                 cliente_rodando = False
                 break
 
@@ -150,7 +190,9 @@ def iniciar_cliente():
                 continue
 
             # envia o comando processado
+            resposta_recebida.clear()
             enviar_comando(cliente, comando)
+            resposta_recebida.wait(timeout=3)
 
     except ConnectionRefusedError:
         print("\nErro: Nao foi possivel conectar. O servidor esta ligado?")
