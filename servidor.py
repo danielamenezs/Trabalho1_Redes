@@ -125,7 +125,7 @@ def notificar_inscritos(materia, autor, mensagem, horario, cliente_autor):
             if cliente in clientes_conectados:
                 clientes_conectados.remove(cliente)
 
-    print(f"[*] Notificacao PUSH despachada para {total_enviado} socket(s).")
+    print(f"[info] notificacao enviada para {total_enviado} cliente(s) inscrito(s).")
     return total_enviado
 
 def adicionar_aviso(numero_materia, autor, mensagem, cliente_autor):
@@ -149,7 +149,7 @@ def adicionar_aviso(numero_materia, autor, mensagem, cliente_autor):
     # dispara push pra galera dessa materia
     total_notificados = notificar_inscritos(materia, autor, mensagem, horario, cliente_autor)
 
-    return f"Aviso publicado em {materia}! (Alunos notificados em tempo real: {total_notificados})"
+    return f"OK. Aviso publicado em {materia}. Alunos notificados em tempo real: {total_notificados}."
 
 def listar_avisos(numero_materia):
     materia = obter_materia_por_numero(numero_materia)
@@ -246,7 +246,7 @@ def processar_comando(comando, cliente):
     return "ERRO: comando invalido ou nao mapeado no protocolo."
 
 def atender_cliente(conexao, endereco):
-    print(f"[+] Novo usuario na rede: {endereco[0]}:{endereco[1]}")
+    print(f"[+] cliente conectado: {endereco[0]}:{endereco[1]}")
     cliente = registrar_cliente(conexao, endereco)
     buffer_texto = ""
 
@@ -276,13 +276,13 @@ def atender_cliente(conexao, endereco):
                     return
 
     except ConnectionResetError:
-        print(f"[-] Cliente crashou ou usou CTRL+C: {endereco[1]}")
+        print(f"[-] conexao interrompida pelo cliente: {endereco[1]}")
     except OSError:
-        print(f"[-] Erro de socket na porta: {endereco[1]}")
+        print(f"[-] erro de comunicacao com o cliente: {endereco[1]}")
     finally:
         remover_cliente(cliente)
         conexao.close()
-        print(f"[-] Sessao encerrada: {endereco[0]}:{endereco[1]}")
+        print(f"[-] sessao encerrada: {endereco[0]}:{endereco[1]}")
 
 def iniciar_servidor():
     servidor = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -290,13 +290,18 @@ def iniciar_servidor():
     servidor.bind((HOST, PORTA))
     servidor.listen(5)
 
-    print("="*40)
-    print(" SERVIDOR DO MURAL ACADEMICO INICIADO")
-    print("="*40)
-    print(f" > IP de escuta..: {HOST}")
-    print(f" > Porta TCP.....: {PORTA}")
-    print(" > Status........: Escutando via Sockets")
-    print("="*40)
+        
+    print()
+    print("╔════════════════════════════════════════════╗")
+    print("║        SERVIDOR DO MURAL ACADEMICO        ║")
+    print("╚════════════════════════════════════════════╝")
+    print(f"IP de escuta : {HOST}")
+    print(f"Porta TCP    : {PORTA}")
+    print("Protocolo    : TCP/IP")
+    print("Status       : ativo e aguardando conexoes")
+    print("Modo         : atendimento concorrente")
+    print()
+    
 
     while True:
         conexao, endereco = servidor.accept()
