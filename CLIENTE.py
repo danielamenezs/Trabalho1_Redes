@@ -12,9 +12,7 @@ TAMANHO_BUFFER = 4096
 # variavel global para avisar quando o cliente deve encerrar e fechar as threads
 cliente_rodando = True
 
-
 def mostrar_menu():
-    """Desenha um menu organizado e limpo na tela do usuario"""
     print("\n" + "="*40)
     print("          MURAL ACADEMICO           ")
     print("="*40)
@@ -32,7 +30,6 @@ def mostrar_menu():
 
 
 def receber_mensagens(cliente):
-    """Fica escutando o servidor o tempo todo para capturar respostas e notificacoes"""
     global cliente_rodando
     
     # buffer de texto pra ir juntando os pedacos de dados que chegam pelo tcp
@@ -44,7 +41,7 @@ def receber_mensagens(cliente):
 
             # se o servidor fechar a conexao, o recv retorna vazio
             if not dados:
-                print("\n[!] Conexao encerrada pelo servidor.")
+                print("\nConexao encerrada pelo servidor.")
                 cliente_rodando = False
                 break
 
@@ -68,7 +65,7 @@ def receber_mensagens(cliente):
                     if len(partes) >= 5:
                         materia, autor, aviso, horario = partes[1], partes[2], partes[3], partes[4]
                         print("\n" + "-"*40)
-                        print(" 🔔 NOVA NOTIFICACAO!")
+                        print("NOVA NOTIFICACAO!")
                         print(f" Materia: {materia}")
                         print(f" Autor:   {autor}")
                         print(f" Horario: {horario}")
@@ -83,19 +80,16 @@ def receber_mensagens(cliente):
                     print(f"\n{mensagem}")
 
         except OSError:
-            # se der erro de sistema operacional (ex: fechamos o programa abruptamente)
+            # se der erro de sistema operacional
             cliente_rodando = False
             break
 
-
 def enviar_comando(cliente, comando):
-    """Prepara a string com o /n no final e envia os bytes para o servidor"""
     comando_formatado = comando + "\n"
     cliente.sendall(comando_formatado.encode("utf-8"))
 
 
 def iniciar_cliente():
-    """Funcao principal que conecta e gerencia os inputs do usuario"""
     global cliente_rodando
 
     # cria o socket tcp (ipv4 e stream)
@@ -118,7 +112,7 @@ def iniciar_cliente():
             
             comando = ""
 
-            # formata a string de acordo com o protocolo que inventamos
+            # formata a string de acordo com o protocolo
             if opcao == "1":
                 comando = "MATERIAS"
 
@@ -162,10 +156,10 @@ def iniciar_cliente():
                 break
 
             else:
-                print("\n[x] Opcao invalida. Tente novamente.")
+                print("\nOpcao invalida. Tente novamente.")
                 continue
 
-            # se chegou ate aqui, despacha o comando pro servidor processar
+            # despacha o comando pro servidor processar
             enviar_comando(cliente, comando)
 
     except ConnectionRefusedError:
@@ -173,11 +167,10 @@ def iniciar_cliente():
     except Exception as erro:
         print(f"\nOcorreu um erro inesperado: {erro}")
     finally:
-        # garante que a conexao vai ser fechada de um jeito limpo
+        # garante que a conexao vai ser fechada
         cliente_rodando = False
         cliente.close()
         print("\nPrograma encerrado.")
-
 
 # ponto de entrada do script
 if __name__ == "__main__":
