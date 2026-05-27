@@ -21,54 +21,50 @@ cliente_rodando = True
 # cria uma funcao que vai apenas imprimir as opcoes na tela pro usuario
 def mostrar_menu():
     # pula uma linha e imprime uma linha de separacao
-    print("\n" + "=" * 40)
+    print("\n")
 
     # imprime o titulo do menu
-    print("MURAL ACADEMICO - MENU")
+    print("Mural Academico - MENU")
 
     # imprime outra linha de separacao
     print("=" * 40)
 
     # mostra a opcao 1 para ver as materias
-    print("1 - Ver lista de materias")
+    print("1. Lista de Matérias")
 
     # mostra a opcao 2 para listar os avisos
-    print("2 - Ver avisos de uma materia")
+    print("2. Avisos de uma matéria")
 
     # mostra a opcao 3 para criar um aviso novo
-    print("3 - Postar novo aviso")
+    print("3. Publicar novo aviso")
 
     # mostra a opcao 4 para deletar um aviso
-    print("4 - Apagar um aviso")
+    print("4. Apagar um aviso")
 
     # mostra a opcao 5 para limpar tudo de uma materia
-    print("5 - Limpar mural de uma materia")
+    print("5. Limpar mural de uma materia")
 
     # mostra a opcao 6 para se inscrever em uma materia
-    print("6 - Inscrever-se em uma materia")
+    print("6. Inscrever-se em uma materia")
 
     # mostra a opcao 7 para remover a inscricao de uma materia
-    print("7 - Remover inscricao de uma materia")
+    print("7. Remover inscricao de uma materia")
 
     # mostra a opcao 8 para ver as inscricoes atuais
-    print("8 - Ver minhas inscricoes")
+    print("8. Ver minhas inscricoes")
 
     # mostra a opcao 9 para pedir ajuda ao servidor
-    print("9 - Ver comandos do servidor")
+    print("9. Ver comandos do servidor")
 
     # mostra a opcao 0 para sair do programa
-    print("0 - Sair")
-
-    # imprime a ultima linha de separacao
-    print("=" * 40)
-
+    print("0. Sair")
 
 # cria uma funcao para receber mensagens do servidor o tempo todo
 def receber_mensagens(cliente):
     # usa a variavel global que controla se o cliente continua rodando
     global cliente_rodando
 
-    # cria um buffer de texto para juntar dados recebidos pelo tcp
+    # cria um buffer de texto pra juntar dados recebidos pelo tcp
     buffer_texto = ""
 
     # mantem a escuta enquanto o programa estiver rodando
@@ -81,7 +77,7 @@ def receber_mensagens(cliente):
             # se nao vier nenhum dado, significa que a conexao foi fechada
             if not dados:
                 # avisa que o servidor encerrou a conexao
-                print("\nconexao encerrada pelo servidor.")
+                print("\nConexao encerrada pelo servidor.")
 
                 # marca o cliente como encerrado
                 cliente_rodando = False
@@ -127,27 +123,27 @@ def receber_mensagens(cliente):
                         horario = partes[4]
 
                         # imprime a notificacao de um jeito mais bonito
-                        print("\n\n>>> nova notificacao")
-                        print(f"materia: {materia}")
-                        print(f"autor: {autor}")
-                        print(f"horario: {horario}")
-                        print(f"aviso: {aviso}")
+                        print("\n\n>>> NOVA NOTIFICACAO")
+                        print(f"Materia: {materia}")
+                        print(f"Autor: {autor}")
+                        print(f"Horario: {horario}")
+                        print(f"Aviso: {aviso}")
 
                     # caso o formato esteja estranho, imprime cru mesmo
                     else:
-                        print("\n>>> notificacao recebida:")
+                        print("\n>>> NOTIFICACAO RECEBIDA:")
                         print(mensagem)
 
                 # se nao for notificacao, imprime como resposta normal do servidor
                 else:
                     # pula uma linha e avisa que a mensagem veio do servidor
-                    print("\n>>> resposta do servidor:")
+                    print("\n>>> Resposta do servidor:")
 
                     # imprime a mensagem recebida
                     print(mensagem)
 
                 # reimprime o convite de comando para nao deixar o terminal confuso
-                print("\npressione enter para continuar ou escolha uma opcao no menu.")
+                print("\nPressione enter para continuar ou escolha uma opcao no menu.")
 
         # captura erro se a conexao for encerrada
         except OSError:
@@ -198,7 +194,7 @@ def iniciar_cliente():
             mostrar_menu()
 
             # pede pro usuario digitar uma opcao
-            opcao = input("escolha uma opcao (0-9): ")
+            opcao = input("Escolha uma opcao (0-9): ")
 
             # cria uma variavel vazia que vai guardar o comando no formato do servidor
             comando = ""
@@ -211,7 +207,7 @@ def iniciar_cliente():
             # verifica se o usuario digitou a opcao 2
             elif opcao == "2":
                 # pede pro usuario digitar qual o numero da materia
-                numero = input("digite o numero da materia: ")
+                numero = input("Digite o numero da materia: ")
 
                 # monta o comando list juntando com o numero da materia
                 comando = f"LIST|{numero}"
@@ -219,13 +215,13 @@ def iniciar_cliente():
             # verifica se o usuario digitou a opcao 3
             elif opcao == "3":
                 # pede o numero da materia
-                numero = input("digite o numero da materia: ")
+                numero = input("Digite o numero da materia: ")
 
                 # pede o nome do autor do recado
-                autor = input("qual o seu nome? ")
+                autor = input("Qual o seu nome? ")
 
                 # pede o texto do aviso
-                mensagem = input("digite o recado: ")
+                mensagem = input("Digite o recado: ")
 
                 # monta o comando post no formato entendido pelo servidor
                 comando = f"POST|{numero}|{autor}|{mensagem}"
@@ -233,10 +229,10 @@ def iniciar_cliente():
             # verifica se o usuario digitou a opcao 4
             elif opcao == "4":
                 # pede o numero da materia
-                numero_mat = input("digite o numero da materia: ")
+                numero_mat = input("Digite o numero da materia: ")
 
                 # pede o numero do aviso que vai ser apagado
-                numero_aviso = input("digite o numero do aviso a ser apagado: ")
+                numero_aviso = input("Digite o numero do aviso a ser apagado: ")
 
                 # monta o comando delete com a materia e o aviso
                 comando = f"DELETE|{numero_mat}|{numero_aviso}"
@@ -244,7 +240,7 @@ def iniciar_cliente():
             # verifica se o usuario digitou a opcao 5
             elif opcao == "5":
                 # pede o numero da materia para apagar tudo
-                numero = input("digite o numero da materia para limpar o mural: ")
+                numero = input("Digite o numero da materia para limpar o mural: ")
 
                 # monta o comando clear com o numero
                 comando = f"CLEAR|{numero}"
@@ -252,7 +248,7 @@ def iniciar_cliente():
             # verifica se o usuario digitou a opcao 6
             elif opcao == "6":
                 # pede o numero da materia para inscricao
-                numero = input("digite o numero da materia para se inscrever: ")
+                numero = input("Digite o numero da materia para se inscrever: ")
 
                 # monta o comando subscribe
                 comando = f"SUBSCRIBE|{numero}"
@@ -260,7 +256,7 @@ def iniciar_cliente():
             # verifica se o usuario digitou a opcao 7
             elif opcao == "7":
                 # pede o numero da materia para remover inscricao
-                numero = input("digite o numero da materia para remover inscricao: ")
+                numero = input("Digite o numero da materia para remover inscricao: ")
 
                 # monta o comando unsubscribe
                 comando = f"UNSUBSCRIBE|{numero}"
