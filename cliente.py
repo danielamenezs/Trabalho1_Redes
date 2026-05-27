@@ -137,8 +137,9 @@ def iniciar_cliente():
 
             elif opcao == "3":
                 numero = input("Digite o numero da materia: ")
-                autor = input("Qual o seu nome? ")
-                mensagem = input("Digite o recado: ")
+                # Limpa o input para não quebrar o protocolo
+                autor = input("Qual o seu nome? ").replace("|", "-")
+                mensagem = input("Digite o recado: ").replace("|", "-")
                 comando = f"POST|{numero}|{autor}|{mensagem}"
 
             elif opcao == "4":
