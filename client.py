@@ -4,7 +4,6 @@ import socket
 # importa threading para permitir receber mensagens enquanto o usuario digita comandos
 import threading
 
-
 # define o ip do servidor
 HOST = "127.0.0.1"
 
@@ -25,9 +24,6 @@ def mostrar_menu():
 
     # imprime o titulo do menu
     print("Mural Academico - MENU")
-
-    # imprime outra linha de separacao
-    print("=" * 40)
 
     # mostra a opcao 1 para ver as materias
     print("1. Lista de Matérias")
@@ -136,9 +132,6 @@ def receber_mensagens(cliente):
 
                 # se nao for notificacao, imprime como resposta normal do servidor
                 else:
-                    # pula uma linha e avisa que a mensagem veio do servidor
-                    print("\n>>> Resposta do servidor:")
-
                     # imprime a mensagem recebida
                     print(mensagem)
 
@@ -177,7 +170,7 @@ def iniciar_cliente():
         cliente.connect((HOST, PORTA))
 
         # mostra na tela que conseguiu conectar com sucesso
-        print("conectado ao servidor do mural com sucesso!")
+        print("Conectado ao servidor do mural com sucesso!")
 
         # cria uma thread para receber mensagens do servidor em segundo plano
         thread_recebimento = threading.Thread(target=receber_mensagens, args=(cliente,))
@@ -288,7 +281,7 @@ def iniciar_cliente():
             # trata qualquer outra coisa que o usuario digitar errado
             else:
                 # avisa que a opcao nao existe
-                print("\nopcao invalida. tente novamente.")
+                print("\nOpcao invalida. Tente novamente.")
 
                 # volta pro inicio do loop
                 continue
@@ -299,12 +292,12 @@ def iniciar_cliente():
     # captura o erro especifico de quando o servidor esta desligado
     except ConnectionRefusedError:
         # avisa o usuario que nao deu pra conectar
-        print("erro: nao foi possivel conectar. o servidor esta rodando?")
+        print("Erro: nao foi possivel conectar. O servidor esta rodando?")
 
     # captura qualquer outro erro que possa acontecer
     except Exception as erro:
         # mostra qual foi o erro inesperado
-        print(f"ocorreu um erro inesperado: {erro}")
+        print(f"Ocorreu um erro inesperado: {erro}")
 
     # o bloco finally sempre executa no final, dando erro ou nao
     finally:
@@ -315,7 +308,7 @@ def iniciar_cliente():
         cliente.close()
 
         # avisa na tela que o programa terminou
-        print("programa encerrado.")
+        print("Programa encerrado.")
 
 
 # verifica se o arquivo esta sendo executado direto
